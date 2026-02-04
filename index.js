@@ -7,7 +7,7 @@ const { ocrSpace } = require("ocr-space-api-wrapper");
 const sharp = require("sharp");
 const Docxtemplater = require("docxtemplater");
 const ImageModule = require("docxtemplater-image-module-free");
-
+const PORT = process.env.PORT || 3000;
 http
   .createServer(async (req, res) => {
     if (req.url === "/") {
@@ -105,7 +105,7 @@ http
     else {
     }
   })
-  .listen(3000, () => {
+  .listen(PORT, () => {
     console.log(`Server running at http://localhost:3000/`);
   });
 
