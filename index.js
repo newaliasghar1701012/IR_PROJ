@@ -8,7 +8,7 @@ const sharp = require("sharp");
 const Docxtemplater = require("docxtemplater");
 const ImageModule = require("docxtemplater-image-module-free");
 const os = require("os");
-
+const ocrApiKey = process.env.OCR_API_KEY;
 let UPLOAD_DIR = path.join(os.tempdir(),"uploads");
 const PORT = process.env.PORT || 3000;
 http
@@ -145,7 +145,7 @@ async function preprocessImage(inputPath) {
 
 async function test(imagePath) {
   const res2 = await ocrSpace(imagePath, {
-    apiKey: "K82492896188957",
+    apiKey:ocrApiKey,
   });
   let ocrData = res2.ParsedResults[0].ParsedText;
   let cleanedData = ocrData
