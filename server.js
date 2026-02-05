@@ -9,7 +9,7 @@ const Docxtemplater = require("docxtemplater");
 const ImageModule = require("docxtemplater-image-module-free");
 const os = require("os");
 const ocrApiKey = process.env.OCR_API_KEY;
-let UPLOAD_DIR = path.join(os.tempdir(),"uploads");
+let UPLOAD_DIR = path.join(os.tmpdir(),"uploads");
 const PORT = process.env.PORT || 3000;
 http
   .createServer(async (req, res) => {
