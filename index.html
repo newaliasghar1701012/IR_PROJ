@@ -266,6 +266,86 @@
           height: 40vh;
         }
       }
+
+      /* MOBILE ENHANCEMENTS FOR PHONE READABILITY */
+      @media (max-width: 800px) {
+        /* Header */
+        header {
+          /* flex-direction: column; */
+          height: ;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 24px;
+        }
+
+        header .brand h1 {
+          font-size: 24px; /* bigger for visibility */
+          line-height: 1.3;
+        }
+
+        header .brand p {
+          font-size: 14px; /* bigger and easier to read */
+          line-height: 1.4;
+        }
+        .logo {
+          width: 50px;
+          height: 50px;
+        }
+
+        .field {
+          margin-top: 10px;
+        }
+        /* .chip {
+          font-size: 13px;
+          padding: 8px 12px;
+        } */
+
+        /* Form heading */
+        .left h2 {
+          font-size: 22px;
+        }
+
+        /* Labels and inputs */
+        label {
+          font-size: 16px;
+        }
+
+        input[type="file"],
+        input[type="date"] {
+          font-size: 16px;
+          padding: 14px;
+          border: 1px solid #b3b6b6;
+        }
+
+        /* Buttons */
+        .btn {
+          font-size: 20px;
+          padding: 14px;
+        }
+
+        /* Layout adjustments */
+        .layout {
+          grid-template-columns: 1fr;
+          padding: 16px;
+        }
+
+        .right {
+          margin-top: 16px;
+          height: 50vh;
+        }
+
+        /* Preview grid: make images slightly bigger */
+        .preview-grid {
+          /* grid-template-columns: 1fr; one per row for easier tap */
+          gap: 12px;
+        }
+        .preview-title {
+          font-size: 20px;
+        }
+        .thumb {
+          height: 140px; /* bigger thumbnails */
+        }
+      }
     </style>
   </head>
 
