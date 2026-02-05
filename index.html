@@ -417,6 +417,7 @@
       const submitBtn = document.getElementById("submitBtn");
       const previewGrid = document.getElementById("previewGrid");
       const fileInput = document.getElementById("image");
+      const allowedPattern = /^IR_\d+\.JPG$/;
 
       let selectedFiles = [];
 
@@ -439,7 +440,23 @@
 
       fileInput.addEventListener("change", () => {
         selectedFiles = Array.from(fileInput.files);
-        updatePreview();
+
+        const invalidFiles = selectedFiles.filter(
+          (file) => !allowedPattern.test(file.name)
+        );
+
+        if (invalidFiles.length > 0) {
+          status.innerText = `Invalid file(s): ${invalidFiles
+            .map((f) => f.name)
+            .join(", ")}`;
+          status.style.color = "red";
+          fileInput.value = ""; // reset input
+          return;
+        } else {
+          status.innerText = "";
+          updatePreview();
+          // You can update your preview here if you want
+        }
       });
 
       previewGrid.addEventListener("click", (e) => {
