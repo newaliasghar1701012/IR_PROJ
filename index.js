@@ -7,6 +7,9 @@ const { ocrSpace } = require("ocr-space-api-wrapper");
 const sharp = require("sharp");
 const Docxtemplater = require("docxtemplater");
 const ImageModule = require("docxtemplater-image-module-free");
+const os = require("os");
+
+let UPLOAD_DIR = path.join(os.tempdir(),"uploads");
 const PORT = process.env.PORT || 3000;
 http
   .createServer(async (req, res) => {
@@ -21,10 +24,10 @@ http
       //PIC UPLOADING START
       //PIC UPLOADING START
       console.log("upload requested!!");
-      fs.mkdirSync("/project/workspace/uploads", { recursive: true });
+      fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
       let form = formidable({
-        uploadDir: path.join(__dirname, "uploads"),
+        uploadDir: UPLOAD_DIR,
         keepExtensions: true,
         filename: (name, ext, part) => {
           return path.basename(part.originalFilename);
@@ -53,27 +56,7 @@ http
       //fs.mkdirSync("/project/workspace/uploads", { recursive: true });
       res.writeHead(200);
       res.end();
-    } else if (req.url === "/upload") {
-      //PIC UPLOADING START
-      console.log("upload requested!!");
-      let form = formidable({
-        uploadDir: path.join(__dirname, "uploads"),
-        keepExtensions: true,
-        filename: (name, ext, part) => {
-          return path.basename(part.originalFilename);
-        },
-      });
-      form.parse(req, async (err, fields, files) => {
-        if (err) {
-          res.writeHead(400);
-          return res.end("Upload errorr");
-        }
-
-        res.writeHead(200);
-        res.end();
-      });
-    }
-
+    } 
     //PIC UPLOADING END
     else if (req.url === "/download") {
       // DOWNLOADING WORD DOC START
@@ -94,7 +77,7 @@ http
 
         res.end(data);
         try {
-          fs.unlinkSync("/project/workspace/outputFile.docx");
+          fs.unlinkSync(path.join(__dirname, "outputFile.docx"));
 
           console.log("File deleted successfully");
         } catch (err) {
@@ -138,7 +121,7 @@ async function insertData(allData) {
 
   let buffer = doc.getZip().generate({ type: "nodebuffer" });
   fs.writeFileSync("outputFile.docx", buffer);
-  fs.rmSync("/project/workspace/uploads", { recursive: true, force: true });
+  fs.rmSync(UPLOAD_DIR, { recursive: true, force: true });
   //console.log("Generated + uploaded pic deleted.");
 }
 ///////////////////////////////////////////////[1]    [2]        [0]
@@ -154,10 +137,10 @@ async function preprocessImage(inputPath) {
     .normalize()
     .sharpen()
     .png()
-    .toFile("/project/workspace/uploads/PROCESED.png");
+    .toFile(path.join(__dirname,"PROCESED.png"));
 
   console.log("Preprocessing completed + file deleted:");
-  return "/project/workspace/uploads/PROCESED.png";
+  return path.join(__dirname,"PROCESED.png");
 }
 
 async function test(imagePath) {
@@ -188,7 +171,7 @@ async function test(imagePath) {
 async function getAllData() {
   let insertDataObject = [];
 
-  let imagesDir = path.join(__dirname, "uploads");
+  let imagesDir = UPLOAD_DIR;
   let imageArr = fs.readdirSync(imagesDir);
 
   imageArr.sort((a, b) => {
@@ -198,11 +181,11 @@ async function getAllData() {
   });
   for (let i = 0; i < imageArr.length - 1; i = i + 2) {
     let tempPathDig = fs.readFileSync(
-      path.join(__dirname, "uploads", imageArr[i])
+      path.join(UPLOAD_DIR, imageArr[i])
     );
 
     let tempPathIr = fs.readFileSync(
-      path.join(__dirname, "uploads", imageArr[i + 1])
+      path.join(UPLOAD_DIR, imageArr[i + 1])
     );
     let processedImgPath = await preprocessImage(tempPathIr);
     let ocrDataArr = await test(processedImgPath);
@@ -217,8 +200,8 @@ async function getAllData() {
         HOT_TEMP: ocrDataArr[2],
         COLD_TEMP: ocrDataArr[0],
         DIFF_TEMP: diff_temp,
-        photo1: path.join(__dirname, "uploads", imageArr[i + 1]),
-        photo2: path.join(__dirname, "uploads", imageArr[i]),
+        photo1: path.join(UPLOAD_DIR, imageArr[i + 1]),
+        photo2: path.join(UPLOAD_DIR, imageArr[i]),
       });
     }
   }
