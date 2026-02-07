@@ -11,15 +11,56 @@ const os = require("os");
 const ocrApiKey = process.env.OCR_API_KEY;
 let UPLOAD_DIR = path.join(os.tmpdir(),"uploads");
 const PORT = process.env.PORT || 3000;
+const PASSWORD = "987654321@";
+
 http
   .createServer(async (req, res) => {
-    if (req.url === "/") {
+     if (req.url === "/") {
       //HTML SERVING START
-      console.log("html requested!");
-      let htmlFile = fs.readFileSync("index.html");
-      res.writeHead(200, { "content-type": "text/html" });
-      res.end(htmlFile);
-    } //HTML SERVING END
+
+      // Serve your main app
+      const htmlFile = fs.readFileSync("login.html", "utf8"); // or full path
+      res.writeHead(200, { "Content-Type": "text/html" });
+      return res.end(htmlFile);
+    }
+
+    ////////////////////////////
+    else if (req.method === "POST" && req.url === "/login") {
+      let body = "";
+      let sessionId = "sessionid";
+      req.on("data", (chunk) => (body += chunk));
+      req.on("end", () => {
+        try {
+          const { password } = JSON.parse(body);
+          if (password === PASSWORD) {
+            res.setHeader(
+              "Set-Cookie",
+              `session=${sessionId}; HttpOnly; Max-Age=1800`
+            );
+
+            res.writeHead(302, { Location: "/index" });
+            res.end();
+          } else {
+            res.writeHead(401);
+            return res.end();
+          }
+        } catch {
+          res.writeHead(400);
+          return res.end();
+        }
+      });
+      return;
+    } else if (req.url === "/index") {
+      //HTML SERVING START
+      const cookieHeader = req.headers.cookie || "";
+
+      if (cookieHeader.includes("session=session")) {
+        const html = fs.readFileSync("index.html");
+        res.end(html);
+      } else {
+        res.end("Access denied. Login first!");
+      }
+    }
     else if (req.url === "/start") {
       //PIC UPLOADING START
       //PIC UPLOADING START
