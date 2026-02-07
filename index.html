@@ -451,6 +451,7 @@
             .join(", ")}, (MASTI NA KARO!!)`;
           status.style.color = "red";
           fileInput.value = ""; // reset input
+          previewGrid.innerHTML = "";
           return;
         } else {
           status.innerText = "";
@@ -494,8 +495,7 @@
         loader.style.display = "none";
 
         if (res.ok) {
-                    status.style.color = "black";
-
+          status.style.color = "black";
           status.innerText = "Processing complete. Download is ready.";
           downloadBtn.style.display = "block";
         } else {
