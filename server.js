@@ -253,6 +253,18 @@ async function getAllData(uploadDate) {
         photo1: path.join(UPLOAD_DIR, imageArr[i + 1]),
         photo2: path.join(UPLOAD_DIR, imageArr[i]),
       });
+
+       if (diff_temp > 10) {
+        insertDataObject.push({
+          DATE: "",
+          AMB_TEMP: "",
+          HOT_TEMP: "",
+          COLD_TEMP: "",
+          DIFF_TEMP: "",
+          // photo1: path.join(__dirname, "uploads", imageArr[i + 1]),
+          // photo2: path.join(__dirname, "uploads", imageArr[i]),
+        });
+      }
     }
   }
   console.log("get all data completed");
