@@ -244,25 +244,73 @@ async function getAllData(uploadDate) {
       //console.log(ocrDataArr);
       let diff_temp = ocrDataArr[2] - ocrDataArr[1];
       diff_temp = diff_temp.toFixed(1);
-      insertDataObject.push({
-        DATE: uploadDate,
-        AMB_TEMP: ocrDataArr[1],
-        HOT_TEMP: ocrDataArr[2],
-        COLD_TEMP: ocrDataArr[0],
-        DIFF_TEMP: diff_temp,
-        photo1: path.join(UPLOAD_DIR, imageArr[i + 1]),
-        photo2: path.join(UPLOAD_DIR, imageArr[i]),
-      });
-
-       if (diff_temp > 10) {
+      
+      if (diff_temp <= 11) {
         insertDataObject.push({
-          DATE: "",
-          AMB_TEMP: "",
-          HOT_TEMP: "",
-          COLD_TEMP: "",
-          DIFF_TEMP: "",
-          // photo1: path.join(__dirname, "uploads", imageArr[i + 1]),
-          // photo2: path.join(__dirname, "uploads", imageArr[i]),
+          DATE: uploadDate,
+          AMB_TEMP: ocrDataArr[1],
+          HOT_TEMP: ocrDataArr[2],
+          COLD_TEMP: ocrDataArr[0],
+          DIFF_TEMP: diff_temp,
+          OBSERVS: "",
+          RECOMDS: "",
+          isC0: true,
+          isC1: false,
+          isC2: false,
+          isC3: false,
+          photo1: path.join(__dirname, "uploads", imageArr[i + 1]),
+          photo2: path.join(__dirname, "uploads", imageArr[i]),
+        });
+      } else if (diff_temp >= 11 && diff_temp <= 150) {
+        insertDataObject.push(
+          {
+            DATE: uploadDate,
+            AMB_TEMP: ocrDataArr[1],
+            HOT_TEMP: ocrDataArr[2],
+            COLD_TEMP: ocrDataArr[0],
+            DIFF_TEMP: diff_temp,
+            photo1: path.join(__dirname, "uploads", imageArr[i + 1]),
+            photo2: path.join(__dirname, "uploads", imageArr[i]),
+            OBSERVS:
+              "Hot point is observed on cable during scanning, but probable cause is not identified at the time of inspection",
+            RECOMDS:
+              "Check cable connection for possible loose connection, clean contacts and tighten where required.",
+            isC0: false,
+            isC1: diff_temp >= 11 && diff_temp <= 20,
+            isC2: diff_temp >= 21 && diff_temp <= 29,
+
+            isC3: diff_temp >= 30,
+          },
+          {
+            DATE: "",
+            AMB_TEMP: "",
+            HOT_TEMP: "",
+            COLD_TEMP: "",
+            DIFF_TEMP: "",
+            OBSERVS: "Contacts were cleaned and terminals retightened",
+            RECOMDS:
+              "Loosing was observed in cable terminal. Initially the temperature was 99.7°C but after corrective action it dropped to 44.4°C.",
+            isC0: true,
+            isC1: false,
+            isC2: false,
+            isC3: false,
+          }
+        );
+      } else {
+        insertDataObject.push({
+          DATE: uploadDate,
+          AMB_TEMP: "insert values manually ",
+          HOT_TEMP: "insert values manually ",
+          COLD_TEMP: "insert values manually ",
+          DIFF_TEMP: "insert values manually ",
+          OBSERVS: "",
+          RECOMDS: "",
+          isC0: true,
+          isC1: false,
+          isC2: false,
+          isC3: false,
+          photo1: path.join(__dirname, "uploads", imageArr[i + 1]),
+          photo2: path.join(__dirname, "uploads", imageArr[i]),
         });
       }
     }
