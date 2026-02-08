@@ -64,6 +64,8 @@ http
     else if (req.url === "/start") {
       //PIC UPLOADING START
       //PIC UPLOADING START
+            let uploadDate = "";
+
       console.log("upload requested!!");
       fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
@@ -79,7 +81,14 @@ http
       await new Promise((resolve, reject) => {
         form.parse(req, (err, fields, files) => {
           if (err) reject(err);
-          else resolve();
+         else {
+            uploadDate = fields.uploadDate[0];
+            console.log(uploadDate, typeof uploadDate);
+            let [year, month, day] = uploadDate.split("-");
+
+            uploadDate = `${day}/${month}/${year}`;
+            resolve();
+          }
         });
       });
 
@@ -91,7 +100,7 @@ http
       //   }
       // });
 
-      let finalData = await getAllData();
+      let finalData = await getAllData(uploadDate);
       insertData(finalData);
       //fs.rmSync("/project/workspace/uploads", { recursive: true, force: true });
       //fs.mkdirSync("/project/workspace/uploads", { recursive: true });
@@ -209,7 +218,7 @@ async function test(imagePath) {
   return sorted;
 }
 //test("/project/workspace/uploads/PROCESED.png");
-async function getAllData() {
+async function getAllData(uploadDate) {
   let insertDataObject = [];
 
   let imagesDir = UPLOAD_DIR;
@@ -236,7 +245,7 @@ async function getAllData() {
       let diff_temp = ocrDataArr[2] - ocrDataArr[1];
       diff_temp = diff_temp.toFixed(1);
       insertDataObject.push({
-        DATE: "DAT INSERTED",
+        DATE: uploadDate,
         AMB_TEMP: ocrDataArr[1],
         HOT_TEMP: ocrDataArr[2],
         COLD_TEMP: ocrDataArr[0],
